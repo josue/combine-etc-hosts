@@ -33,3 +33,7 @@ By default, when the script is first executed, it will create a backup of the sy
 **Running as Sudo**
 
 Due to root permissions set on */etc/hosts*, it is required to run the script with sudo so that the file can be updated with the new list content.
+
+#### Preview
+
+[![asciicast](https://asciinema.org/a/82661.png)](https://asciinema.org/a/82661)
