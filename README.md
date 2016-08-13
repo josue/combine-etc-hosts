@@ -28,7 +28,7 @@ All list files should go in the default the directory '**lists**', but you can a
 
 **First-Time Running:**
 
-By default, when the script is first executed, it will create a backup of the system's */etc/hosts* as "**hosts.backup_{currentDate}**", and also copy the contents to a newly created list file "**localhost**" in the *lists* directory.
+By default, when the script is first executed, it will create a backup of the system's */etc/hosts* as "**hosts.backup**", and also copy the contents to a newly created list file "**localhost**" in the *lists* directory *(if not exists)*.
 
 **Running as Sudo**
 
