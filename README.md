@@ -36,4 +36,4 @@ Due to root permissions set on */etc/hosts*, it is required to run the script wi
 
 #### Preview
 
-[![asciicast](https://asciinema.org/a/82661.png)](https://asciinema.org/a/82661)
+[![asciicast](https://asciinema.org/a/82661.png?v=2)](https://asciinema.org/a/82661)
