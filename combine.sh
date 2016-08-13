@@ -110,7 +110,7 @@ if [ "${2}" = "-m" ] && [ "${3}" != "" ]; then
 else
     # standard files
     LOCALHOST_FILE="${LIST_PATH}/localhost"
-    LS_FILENAMES="`ls ${LIST_PATH}/* | grep -v "${LOCALHOST_FILE}" | sort -f`"
+    LS_FILENAMES="`ls ${LIST_PATH}/* | grep -v "${LOCALHOST_FILE}" | grep -v "${LIST_PATH}/empty" | sort -f`"
 fi
 
 HELP_INFO="Usage: ${0} {option}
