@@ -115,7 +115,7 @@ fi
 
 HELP_INFO="Usage: ${0} {option}
 
-  \033[1mOptions:\033[0m
+  Options:
 
     -a            -- Add all files from directory path '${LIST_PATH}' (default option)
 
@@ -130,7 +130,7 @@ HELP_INFO="Usage: ${0} {option}
     -h            -- This message :)
 
 
-  \033[1mLists:\033[0m
+  Lists:
 
   All list files should go in the default the directory 'lists', but you 
   can always adjust the path by using the flag '-p' for pattern-matching 
