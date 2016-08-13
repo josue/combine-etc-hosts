@@ -26,6 +26,24 @@ Usage: ```sudo ./combine.sh {option}```
 
 All list files should go in the default the directory '**lists**', but you can always adjust the path by using the flag '**-p**' for pattern-matching a directory or filenames.
 
+Lists should consist of IP address and domain(s). Examples:
+
+:page_with_curl: **lists/development:**
+```
+# Development Sites:
+127.0.0.1 dev.website local.website
+192.168.10.111 intranet corp
+```
+:page_with_curl: **lists/ad-blocking:**
+```
+# Ad-Blocking Domains:
+0.0.0.0 adserver.abv.bg
+0.0.0.0 partnerad.l.doubleclick.net
+127.0.0.1 any-domain-you-want
+```
+
+----
+
 **First-Time Running:**
 
 By default, when the script is first executed, it will create a backup of the system's */etc/hosts* as "**hosts.backup**", and also copy the contents to a newly created list file "**localhost**" in the *lists* directory *(if not exists)*.
