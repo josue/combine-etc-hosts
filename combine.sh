@@ -44,7 +44,7 @@ backup_original_host_file() {
 add_files() {
   FILENAMES=${1:-''}
 
-  touch ${HOSTS_COMBINED}
+  echo "### ---- Modified on `date` via script: `pwd`/${SCRIPT_NAME} ----- ###" > ${HOSTS_COMBINED}
 
   for FILE in ${FILENAMES}
   do
@@ -93,6 +93,7 @@ run_and_check_cases() {
 }
 
 ### --------------- parameters & variables --------------- ###
+SCRIPT_NAME=`basename "$0"`
 ETC_HOSTS="/etc/hosts"
 HOSTS_COMBINED="hosts.combined"
 
