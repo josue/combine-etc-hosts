@@ -51,7 +51,7 @@ whitelist_domain() {
     echo
     for FILE in $FIND_FILES
     do
-      echo "Updating: ${FILE}"
+      echo "- Updating: ${FILE}"
       sed "s/\(.*${RE_DOMAIN}.*\)/#\1/g" ${FILE} > ${FILE}.wl_updated
       rm ${FILE}
       mv ${FILE}.wl_updated ${FILE}
@@ -60,10 +60,10 @@ whitelist_domain() {
     echo "No files found with this domain '${DOMAIN}' enabled."
     echo
 
-    FIND_WHITELISTED=`grep -l "^#.*${RE_DOMAIN}" ${LIST_PATH}/*`
+    FIND_WHITELISTED=`grep -l "^.*${RE_DOMAIN}" ${LIST_PATH}/*`
     for WH_FILE in $FIND_WHITELISTED;
     do
-      echo "Already whitelisted in file: ${WH_FILE}"
+      echo "- Already whitelisted in file: ${WH_FILE}"
     done
   fi
 }
@@ -78,7 +78,7 @@ blacklist_domain() {
     echo
     for FILE in $FIND_FILES
     do
-      echo "Updating: ${FILE}"
+      echo "- Updating: ${FILE}"
       sed "s/^#\(.*${RE_DOMAIN}.*\)/\1/g" ${FILE} > ${FILE}.bl_updated
       rm ${FILE}
       mv ${FILE}.bl_updated ${FILE}
@@ -87,15 +87,15 @@ blacklist_domain() {
     echo "No files found with this domain '${DOMAIN}' disabled."
     echo
 
-    FIND_BLACKLISTED=`grep -l ".*${RE_DOMAIN}" ${LIST_PATH}/*`
+    FIND_BLACKLISTED=`grep -l "^#.*${RE_DOMAIN}" ${LIST_PATH}/*`
 
     if [ "$FIND_BLACKLISTED" != "" ]; then
       for BL_FILE in $FIND_BLACKLISTED;
       do
-        echo "Already blacklisted in file: ${BL_FILE}"
+        echo "- Already blacklisted in file: ${BL_FILE}"
       done
     else
-      echo "Added domain to blacklist file: ${BLACKLIST_FILE}"
+      echo "- Added domain to blacklist file: ${BLACKLIST_FILE}"
       echo "127.0.0.1 ${DOMAIN}" >> ${BLACKLIST_FILE}
     fi
   fi
@@ -120,6 +120,9 @@ find_domain() {
 add_files() {
   FILENAMES=${1:-''}
 
+  echo "Updating ${ETC_HOSTS}:"
+  echo
+
   echo "### ---- Modified on `date` via script: `pwd`/${SCRIPT_NAME} ----- ###" > ${HOSTS_COMBINED}
 
   for FILE in ${FILENAMES}
@@ -141,7 +144,7 @@ run_and_check_cases() {
   case "$1" in
     "-a")
         verify_sudo
-        echo "Adding All Lists:"
+        echo "Adding All Lists!"
         echo
         add_files "${LOCALHOST_FILE} ${LS_FILENAMES}"
         ;;
@@ -154,11 +157,17 @@ run_and_check_cases() {
         ;;
 
     "-wl")
+        verify_sudo
         whitelist_domain "${2}"
+        echo
+        add_files "${LOCALHOST_FILE} ${LS_FILENAMES}"
         ;;
 
     "-bl")
+        verify_sudo
         blacklist_domain "${2}"
+        echo
+        add_files "${LOCALHOST_FILE} ${LS_FILENAMES}"
         ;;
 
     "-d")
