@@ -18,7 +18,9 @@ Usage: ```sudo ./combine.sh {option}```
 >
 > -d {domain} -- Find specific domain in files.
 >
-> -w {domain} -- Whitelist specific domain.
+> -wl {domain} -- Whitelist specific domain.
+>
+> -bl {domain} -- Blacklist specific domain.
 > 
 > -r, -l -- Reset to standard 'lists/localhost' listing only.
 > 
