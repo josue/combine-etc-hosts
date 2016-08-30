@@ -41,6 +41,49 @@ backup_original_host_file() {
   fi
 }
 
+whitelist_domain() {
+  DOMAIN=$1
+  RE_DOMAIN="${DOMAIN/./\.}"
+  FIND_FILES=`grep -ri "${DOMAIN}" ${LIST_PATH}/* | egrep -v ":[#]+[0-9]+\.[0-9]+" | awk -F':' '{ print $1 }' | sort -u`
+
+  if [ "$FIND_FILES" != "" ]; then
+    echo "Whitelisting domain: ${2}"
+    echo
+    for FILE in $FIND_FILES
+    do
+      echo "Updating: ${FILE}"
+      sed "s/\(.*${RE_DOMAIN}.*\)/#\1/g" ${FILE} > ${FILE}.new
+      rm ${FILE}
+      mv ${FILE}.new ${FILE}
+    done
+  else
+    echo "No files found with this domain '${DOMAIN}' enabled."
+    echo
+
+    FIND_WHITELISTED=`grep -l "^#.*${RE_DOMAIN}" ${LIST_PATH}/*`
+    for WH_FILE in $FIND_WHITELISTED;
+    do
+      echo "Already whitelisted in file: ${WH_FILE}"
+    done
+  fi
+}
+
+find_domain() {
+  DOMAIN=$1
+  FIND_FILES=`grep -l "${DOMAIN}" ${LIST_PATH}/*`
+
+  if [ "$FIND_FILES" != "" ]; then
+    echo "Found domain '${DOMAIN}' in files:"
+    echo
+    for FILE in $FIND_FILES;
+    do
+      echo "- ${FILE}"
+    done
+  else
+    echo "No files found with domain: ${DOMAIN}"
+  fi
+}
+
 add_files() {
   FILENAMES=${1:-''}
 
@@ -75,6 +118,14 @@ run_and_check_cases() {
         echo "Adding only file: ${2}"
         echo
         add_files "${2}"
+        ;;
+
+    "-w")
+        whitelist_domain "${2}"
+        ;;
+
+    "-d")
+        find_domain "${2}"
         ;;
 
     "-r" | "-l")
@@ -125,6 +176,10 @@ HELP_INFO="Usage: ${0} {option}
     -m {pattern}  -- Search a different directory path. (default: ${LIST_PATH})
 
     -f {filename} -- Add specific file only.
+
+    -d {domain}   -- Find specific domain in files.
+
+    -w {domain}   -- Whitelist specific domain.
 
     -r, -l        -- Reset to standard '${LOCALHOST_FILE}' listing only.
 

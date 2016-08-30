@@ -15,6 +15,10 @@ Usage: ```sudo ./combine.sh {option}```
 > -m {pattern} -- Search for files matching a given pattern.
 > 
 > -f {filename} -- Add specific file only.
+>
+> -d {domain} -- Find specific domain in files.
+>
+> -w {domain} -- Whitelist specific domain.
 > 
 > -r, -l -- Reset to standard 'lists/localhost' listing only.
 > 
