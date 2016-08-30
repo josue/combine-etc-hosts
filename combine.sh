@@ -47,14 +47,14 @@ whitelist_domain() {
   FIND_FILES=`grep -ri "${DOMAIN}" ${LIST_PATH}/* | egrep -v ":[#]+[0-9]+\.[0-9]+" | awk -F':' '{ print $1 }' | sort -u`
 
   if [ "$FIND_FILES" != "" ]; then
-    echo "Whitelisting domain: ${2}"
+    echo "Whitelisting domain: ${DOMAIN}"
     echo
     for FILE in $FIND_FILES
     do
       echo "Updating: ${FILE}"
-      sed "s/\(.*${RE_DOMAIN}.*\)/#\1/g" ${FILE} > ${FILE}.new
+      sed "s/\(.*${RE_DOMAIN}.*\)/#\1/g" ${FILE} > ${FILE}.wl_updated
       rm ${FILE}
-      mv ${FILE}.new ${FILE}
+      mv ${FILE}.wl_updated ${FILE}
     done
   else
     echo "No files found with this domain '${DOMAIN}' enabled."
@@ -65,6 +65,39 @@ whitelist_domain() {
     do
       echo "Already whitelisted in file: ${WH_FILE}"
     done
+  fi
+}
+
+blacklist_domain() {
+  DOMAIN=$1
+  RE_DOMAIN="${DOMAIN/./\.}"
+  FIND_FILES=`grep -ri "${DOMAIN}" ${LIST_PATH}/* | egrep ":[#]+[0-9]+\.[0-9]+" | awk -F':' '{ print $1 }' | sort -u`
+
+  if [ "$FIND_FILES" != "" ]; then
+    echo "Blacklisting domain: ${DOMAIN}"
+    echo
+    for FILE in $FIND_FILES
+    do
+      echo "Updating: ${FILE}"
+      sed "s/^#\(.*${RE_DOMAIN}.*\)/\1/g" ${FILE} > ${FILE}.bl_updated
+      rm ${FILE}
+      mv ${FILE}.bl_updated ${FILE}
+    done
+  else
+    echo "No files found with this domain '${DOMAIN}' disabled."
+    echo
+
+    FIND_BLACKLISTED=`grep -l ".*${RE_DOMAIN}" ${LIST_PATH}/*`
+
+    if [ "$FIND_BLACKLISTED" != "" ]; then
+      for BL_FILE in $FIND_BLACKLISTED;
+      do
+        echo "Already blacklisted in file: ${BL_FILE}"
+      done
+    else
+      echo "Added domain to blacklist file: ${BLACKLIST_FILE}"
+      echo "127.0.0.1 ${DOMAIN}" >> ${BLACKLIST_FILE}
+    fi
   fi
 }
 
@@ -120,8 +153,12 @@ run_and_check_cases() {
         add_files "${2}"
         ;;
 
-    "-w")
+    "-wl")
         whitelist_domain "${2}"
+        ;;
+
+    "-bl")
+        blacklist_domain "${2}"
         ;;
 
     "-d")
@@ -165,6 +202,8 @@ else
     LS_FILENAMES="`ls ${LIST_PATH}/* | grep -v "${LOCALHOST_FILE}" | grep -v "${LIST_PATH}/empty" | sort -f`"
 fi
 
+BLACKLIST_FILE="${LIST_PATH}/blacklist"
+
 HELP_INFO="Usage: ${0} {option}
 
   Options:
@@ -179,7 +218,9 @@ HELP_INFO="Usage: ${0} {option}
 
     -d {domain}   -- Find specific domain in files.
 
-    -w {domain}   -- Whitelist specific domain.
+    -wl {domain}  -- Whitelist specific domain.
+
+    -bl {domain}  -- Blacklist specific domain.
 
     -r, -l        -- Reset to standard '${LOCALHOST_FILE}' listing only.
 
